@@ -1,0 +1,24 @@
+[package]
+license = "MIT"
+edition = "2021"
+version = "0.1.0"
+readme = "README.md"
+name = "prompt-organizer"
+categories = ["rust-patterns", "text-processing"]
+authors = ["Miguel Piedrafita <rust@miguel.build>"]
+repository = "https://github.com/m1guelpf/prompt-organizer"
+keywords = ["prompt", "ai", "macro", "multiline", "format"]
+description = "A simple library to better manage AI prompts in your Rust code."
+
+[lib]
+proc-macro = true
+
+[dependencies]
+syn = "2.0.60"
+quote = "1.0.36"
+unindent = "0.2.3"
+proc-macro2 = "1.0.81"
+parse-format = "0.1.0"
+
+[dev-dependencies]
+trybuild = { version = "1.0.91", features = ["diff"] }

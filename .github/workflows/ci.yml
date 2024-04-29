@@ -1,0 +1,58 @@
+name: CI
+
+on:
+    push:
+    pull_request:
+
+permissions:
+    contents: read
+
+env:
+    RUSTFLAGS: -Dwarnings
+
+jobs:
+    test:
+        name: Test
+        runs-on: ubuntu-latest
+        timeout-minutes: 45
+        steps:
+            - uses: actions/checkout@v4
+            - uses: dtolnay/rust-toolchain@master
+              with:
+                  toolchain: nightly
+            - name: Enable type layout randomization
+              run: echo RUSTFLAGS=${RUSTFLAGS}\ -Zrandomize-layout >> $GITHUB_ENV
+            - run: cargo check
+            - run: cargo test --workspace
+
+    doc:
+        name: Documentation
+        runs-on: ubuntu-latest
+        timeout-minutes: 45
+        env:
+            RUSTDOCFLAGS: -Dwarnings
+        steps:
+            - uses: actions/checkout@v4
+            - uses: dtolnay/rust-toolchain@nightly
+            - uses: dtolnay/install@cargo-docs-rs
+            - run: cargo docs-rs
+
+    clippy:
+        name: Clippy
+        runs-on: ubuntu-latest
+        timeout-minutes: 45
+        steps:
+            - uses: actions/checkout@v4
+            - uses: dtolnay/rust-toolchain@clippy
+            - run: cargo clippy --tests -- -Dclippy::all -Dclippy::pedantic
+
+    fmt:
+        name: Format
+        runs-on: ubuntu-latest
+        timeout-minutes: 45
+        steps:
+            - uses: actions/checkout@v4
+            - uses: dtolnay/rust-toolchain@nightly
+              with:
+                  components: rustfmt
+            - run: cargo fmt --all -- --check
